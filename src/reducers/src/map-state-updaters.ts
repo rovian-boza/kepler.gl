@@ -4,7 +4,7 @@
 import geoViewport from '@mapbox/geo-viewport';
 import booleanWithin from '@turf/boolean-within';
 import bboxPolygon from '@turf/bbox-polygon';
-import {fitBounds} from '@math.gl/web-mercator';
+import { fitBounds } from '@math.gl/web-mercator';
 import deepmerge from 'deepmerge';
 import pick from 'lodash.pick';
 
@@ -14,8 +14,8 @@ import {
   MAPBOX_TILE_SIZE,
   validateViewPort
 } from '@kepler.gl/utils';
-import {MapStateActions, ReceiveMapConfigPayload, ActionTypes} from '@kepler.gl/actions';
-import {MapState, Bounds, Viewport} from '@kepler.gl/types';
+import { MapStateActions, ReceiveMapConfigPayload, ActionTypes } from '@kepler.gl/actions';
+import { MapState, Bounds, Viewport } from '@kepler.gl/types';
 
 /**
  * Updaters for `mapState` reducer. Can be used in your root reducer to directly modify kepler.gl's state.
@@ -81,8 +81,8 @@ const mapStateUpdaters = null;
 export const INITIAL_MAP_STATE: MapState = {
   pitch: 0,
   bearing: 0,
-  latitude: 37.75043,
-  longitude: -122.34679,
+  latitude: 43.70011000,
+  longitude: -79.41630000,
   zoom: 9,
   dragRotate: false,
   width: 800,
@@ -106,7 +106,7 @@ export const updateMapUpdater = (
   state: MapState,
   action: MapStateActions.UpdateMapUpdaterAction
 ): MapState => {
-  const {viewport: inputViewport, mapIndex = 0} = action.payload;
+  const { viewport: inputViewport, mapIndex = 0 } = action.payload;
   const viewport = validateViewPort(inputViewport);
 
   if (state.isViewportSynced) {
@@ -183,7 +183,7 @@ export const fitBoundsUpdater = (
     longitude: centerAndZoom.center[0],
     // For marginal or invalid bounds, zoom may be NaN. Make sure to provide a valid value in order
     // to avoid corrupt state and potential crashes as zoom is expected to be a number
-    ...(Number.isFinite(centerAndZoom.zoom) ? {zoom: centerAndZoom.zoom} : {})
+    ...(Number.isFinite(centerAndZoom.zoom) ? { zoom: centerAndZoom.zoom } : {})
   };
 
   // if fitting to bounds while split and unsynced
@@ -250,7 +250,7 @@ export const receiveMapConfigUpdater = (
   state: MapState,
   {
     // @ts-expect-error
-    payload: {config = {}, options = {}, bounds = null}
+    payload: { config = {}, options = {}, bounds = null }
   }: {
     type?: typeof ActionTypes.RECEIVE_MAP_CONFIG;
     payload: ReceiveMapConfigPayload;
@@ -299,11 +299,11 @@ export const toggleSplitMapUpdater = (state: MapState): MapState => ({
   isSplit: !state.isSplit,
   ...(!state.isSplit === false
     ? {
-        // if toggling to no longer split (single mode) then reset a few properties
-        isViewportSynced: true,
-        isZoomLocked: false,
-        splitMapViewports: []
-      }
+      // if toggling to no longer split (single mode) then reset a few properties
+      isViewportSynced: true,
+      isZoomLocked: false,
+      splitMapViewports: []
+    }
     : {})
 });
 
@@ -388,11 +388,11 @@ export function getMapDimForSplitMap(isSplit, state) {
   const width =
     state.isSplit && !isSplit
       ? // 3. state split: true - isSplit: false
-        // double width
-        state.width * 2
+      // double width
+      state.width * 2
       : // 4. state split: false - isSplit: true
-        // split width
-        state.width / 2;
+      // split width
+      state.width / 2;
 
   return {
     width
@@ -420,7 +420,7 @@ function updateViewportBasedOnBounds(state: MapState, newMapState: MapState) {
   if (hasMaxBoundsChanged) {
     // Check if the newMapState viewport is within maxBounds
     if (!booleanWithin(viewportBoundsPolygon, maxBoundsPolygon)) {
-      const {latitude, longitude, zoom} = fitBounds({
+      const { latitude, longitude, zoom } = fitBounds({
         width: newMapState.width,
         height: newMapState.width,
         bounds: [
@@ -435,7 +435,7 @@ function updateViewportBasedOnBounds(state: MapState, newMapState: MapState) {
         longitude,
         // For marginal or invalid bounds, zoom may be NaN. Make sure to provide a valid value in order
         // to avoid corrupt state and potential crashes as zoom is expected to be a number
-        ...(Number.isFinite(zoom) ? {zoom} : {})
+        ...(Number.isFinite(zoom) ? { zoom } : {})
       };
     }
     return newMapState;
@@ -473,7 +473,7 @@ export function pickViewportPropsFromMapState(state: MapState): Viewport {
 /** Select items from object whose value is not undefined */
 const definedProps = obj =>
   Object.entries(obj).reduce(
-    (accu, [k, v]) => ({...accu, ...(v !== undefined ? {[k]: v} : {})}),
+    (accu, [k, v]) => ({ ...accu, ...(v !== undefined ? { [k]: v } : {}) }),
     {}
   );
 
